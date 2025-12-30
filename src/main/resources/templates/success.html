@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录成功</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+<div class="login-box">
+    <h2>登录成功</h2>
+
+    <div th:if="${msg}" style="background: #e8f5e8; color: #2e7d32; padding: 10px; border-radius: 6px; margin-bottom: 15px;"
+         th:text="${msg}"></div>
+
+    <div style="text-align: center;">
+        <p>欢迎您，<strong th:text="${username}">用户</strong>！</p>
+
+        <div style="margin-top: 25px; padding: 20px; background: #f5f7fa; border-radius: 6px;">
+            <h3 style="margin-top: 0;">进入问答平台</h3>
+            <p style="margin-bottom: 20px; color: #666;">与其他用户交流讨论</p>
+            <a th:href="@{/discussions}"
+               style="display: inline-block; background: #1976d2; color: white; padding: 10px 20px;
+                      text-decoration: none; border-radius: 6px; margin-bottom: 10px;">
+                进入问答平台
+            </a>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <a th:href="@{/login}" style="color: #1976d2;">返回登录页面</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

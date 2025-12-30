@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="threads-list">
+    <div th:if="${discussions.empty}" class="empty-state">
+        <p>还没有任何讨论主题，<a th:href="@{/discussions/new}">发起第一个讨论</a>！</p>
+    </div>
+
+    <div th:each="discussion : ${discussions.content}" class="thread-item">
+        <div class="thread-header">
+            <h3>
+                <a th:href="@{/discussions/{id}(id=${discussion.id})}"
+                   th:text="${discussion.title}"></a>
+            </h3>
+            <span class="reply-count" th:text="${discussion.replyCount} + ' 回复'"></span>
+        </div>
+        <div class="thread-meta">
+            <span class="author">作者：<span th:text="${discussion.author.username}"></span></span>
+            <span class="time">发布时间：<span th:text="${#temporals.format(discussion.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+        </div>
+        <div class="thread-preview" th:text="${discussion.content}"></div>
+    </div>
+</div>
+</body>
+</html>

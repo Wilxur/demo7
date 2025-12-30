@@ -1,0 +1,72 @@
+<!-- templates/discussionList.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>讨论列表 - 在线问答平台</title>
+    <link rel="stylesheet" th:href="@{/css/forum.css}">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1><a th:href="@{/discussions}" style="color: white; text-decoration: none;">在线问答平台</a></h1>
+        <div class="user-info">
+            欢迎，<strong th:text="${session.username}">用户</strong>！
+            <a th:href="@{/logout}" class="logout-btn">退出</a>
+        </div>
+    </header>
+
+    <div th:if="${msg}" class="message" th:text="${msg}"></div>
+
+    <div class="actions">
+        <a th:href="@{/discussions/new}" class="btn btn-primary">发起新讨论</a>
+    </div>
+
+    <div id="listContainer">
+        <div class="threads-list">
+            <div th:if="${discussions.empty}" class="empty-state">
+                <p>还没有任何讨论主题，<a th:href="@{/discussions/new}">发起第一个讨论</a>！</p>
+            </div>
+
+            <div th:each="discussion : ${discussions.content}" class="thread-item">
+                <div class="thread-header">
+                    <h3>
+                        <a th:href="@{/discussions/{id}(id=${discussion.id})}"
+                           th:text="${discussion.title}"></a>
+                    </h3>
+                    <span class="reply-count" th:text="${discussion.replyCount} + ' 回复'"></span>
+                </div>
+                <div class="thread-meta">
+                    <span class="author">作者：<span th:text="${discussion.author.username}"></span></span>
+                    <span class="time">发布时间：<span th:text="${#temporals.format(discussion.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+                </div>
+                <div class="thread-preview" th:text="${discussion.content}"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <div th:if="${totalPages > 1}" class="pagination">
+        <a th:href="@{/discussions(page=${currentPage-1})}" th:if="${currentPage > 0}">上一页</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+            <a th:href="@{/discussions(page=${i})}"
+               th:class="${i == currentPage} ? 'active' : ''"
+               th:text="${i+1}"></a>
+        </span>
+        <a th:href="@{/discussions(page=${currentPage+1})}" th:if="${currentPage < totalPages-1}">下一页</a>
+    </div>
+</div>
+
+<script>
+    // 自动刷新讨论列表
+    setInterval(() => {
+        fetch('/discussions/list-fragment')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('listContainer').innerHTML = html;
+            });
+    }, 10000);
+</script>
+</body>
+</html>

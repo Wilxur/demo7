@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${discussion.title} + ' - 在线问答平台'"></title>
+    <link rel="stylesheet" th:href="@{/css/forum.css}">
+    <script>
+        // 自动刷新回复部分
+        function refreshReplies() {
+            fetch('/discussions/' + th:block="${discussion.id}" + '/replies-fragment')
+        .then(response => response.text())
+                .then(html => {
+                    document.getElementById('repliesContainer').innerHTML = html;
+                });
+        }
+
+        // 页面加载完成后启动定时刷新
+        document.addEventListener('DOMContentLoaded', function() {
+            // 每30秒刷新一次回复
+            setInterval(refreshReplies, 30000);
+
+            // 点击回复按钮时滚动到回复表单
+            document.getElementById('replyBtn')?.addEventListener('click', function() {
+                document.getElementById('replyForm')?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1><a th:href="@{/discussions}" style="color: white; text-decoration: none;">在线问答平台</a></h1>
+        <div class="user-info">
+            欢迎，<strong th:text="${session.username}">用户</strong>！
+            <a th:href="@{/logout}" class="logout-btn">退出</a>
+        </div>
+    </header>
+
+    <div th:if="${msg}" class="message" th:text="${msg}"></div>
+
+    <div class="thread-detail">
+        <h1 th:text="${discussion.title}"></h1>
+        <div class="thread-meta">
+            <span>作者：<span th:text="${discussion.author.username}"></span></span>
+            <span>发布时间：<span th:text="${#temporals.format(discussion.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+        </div>
+        <div class="thread-content">
+            <pre th:text="${discussion.content}"></pre>
+        </div>
+
+        <div class="replies-section">
+            <h3>回复（<span th:text="${discussion.replyCount}"></span>）</h3>
+
+            <div id="repliesContainer">
+                <div th:if="${discussion.replies.empty}" class="empty-replies">
+                    <p>还没有回复，快来抢沙发吧！</p>
+                </div>
+
+                <div th:each="reply : ${discussion.replies}" class="reply-item">
+                    <div class="reply-header">
+                        <strong th:text="${reply.author.username}"></strong>
+                        <span class="reply-time" th:text="${#temporals.format(reply.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                    </div>
+                    <div class="reply-content">
+                        <pre th:text="${reply.content}"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reply-form" id="replyForm">
+            <h3>发表回复</h3>
+            <form method="post" th:action="@{/replies}">
+                <input type="hidden" name="discussionId" th:value="${discussion.id}"/>
+                <div class="form-group">
+                    <textarea name="content" placeholder="请输入您的回复..." rows="6" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">发表回复</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">返回</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

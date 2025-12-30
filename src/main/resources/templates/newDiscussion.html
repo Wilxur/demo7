@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>发起新讨论 - 在线问答平台</title>
+    <link rel="stylesheet" th:href="@{/css/forum.css}">
+    <script>
+        function validateThreadForm() {
+            var title = document.getElementById('title').value.trim();
+            var content = document.getElementById('content').value.trim();
+
+            if (!title) {
+                alert('请输入标题');
+                return false;
+            }
+            if (!content) {
+                alert('请输入内容');
+                return false;
+            }
+            if (title.length < 3) {
+                alert('标题至少需要3个字符');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1><a th:href="@{/discussions}" style="color: white; text-decoration: none;">在线问答平台</a></h1>
+        <div class="user-info">
+            欢迎，<strong th:text="${session.username}">用户</strong>！
+            <a th:href="@{/logout}" class="logout-btn">退出</a>
+        </div>
+    </header>
+
+    <div th:if="${msg}" class="message" th:text="${msg}"></div>
+
+    <div class="create-thread">
+        <h2>发起新讨论</h2>
+        <form method="post" th:action="@{/discussions}" onsubmit="return validateThreadForm()">
+            <div class="form-group">
+                <label for="title">标题：</label>
+                <input type="text" id="title" name="title" placeholder="请输入讨论标题" required/>
+            </div>
+            <div class="form-group">
+                <label for="content">内容：</label>
+                <textarea id="content" name="content" placeholder="请输入讨论内容..." rows="12" required></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">发布讨论</button>
+                <a th:href="@{/discussions}" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

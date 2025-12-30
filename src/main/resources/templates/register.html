@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>用户注册</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <script src="/js/register.js"></script>
+</head>
+<body>
+<div class="login-box">
+    <h2>用户注册</h2>
+
+    <div th:if="${msg}" class="error" th:text="${msg}"></div>
+
+    <form method="post" action="/register" onsubmit="return validateRegisterForm()">
+        <label>用户名：</label>
+        <input type="text" name="username" id="username" required/>
+        <small>用户名长度3-20位，只能包含字母、数字、下划线</small>
+
+        <label>密码：</label>
+        <input type="password" name="password" id="password" required/>
+        <small>密码长度6-20位</small>
+
+        <label>确认密码：</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" required/>
+
+        <label>邮箱：</label>
+        <input type="email" name="email" id="email" required/>
+
+        <label>验证码：</label>
+        <div class="captcha-line">
+            <input type="text" name="captcha" id="captcha" placeholder="请输入验证码" required/>
+            <img id="captchaImg"
+                 src="/captcha"
+                 onclick="refreshCaptcha()"
+                 style="cursor:pointer;"
+                 alt="验证码">
+        </div>
+
+        <button type="submit">注册</button>
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="/login">已有账号？立即登录</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

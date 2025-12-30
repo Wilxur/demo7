@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录（含验证码）</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <script src="/js/login.js"></script>
+</head>
+<body>
+<div class="login-box">
+    <h2>用户登录</h2>
+
+    <div th:if="${msg}" class="error" th:text="${msg}"></div>
+
+    <form method="post" action="/login" onsubmit="return validateForm()">
+        <label>用户名：</label>
+        <input type="text" name="username" id="username" required/>
+
+        <label>密码：</label>
+        <input type="password" name="password" id="password" required/>
+
+        <label>验证码：</label>
+        <div class="captcha-line">
+            <input type="text" name="captcha" id="captcha" placeholder="请输入验证码" required/>
+            <img id="captchaImg"
+                 src="/captcha"
+                 onclick="refreshCaptcha()"
+                 style="cursor:pointer;"
+                 alt="验证码">
+        </div>
+
+        <button type="submit">登录</button>
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="/register">新用户注册</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
